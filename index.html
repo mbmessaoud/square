@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html>
+   <head>
+   <meta charset="utf-8"/>
+  <style>
+      body {
+          text-align:center;
+          position:relative;
+      }
+      #grid{
+
+            display:inline-block;
+              position:relative;
+
+      }
+
+   canvas {
+
+    z-index: -1;
+
+   }
+  input {
+      left:auto;
+      position:relative;
+     
+  }
+  button {
+      margin: 2px 2px 2px 2px;
+  }
+
+.left {
+    text-align: left;
+
+          left:auto;
+      position:relative;
+        margin: auto;
+}
+
+.center {
+  margin: auto;
+  width: 20%;
+}
+  </style>
+</head>
+<body>
+
+
+
+<div id="grid">
+
+<canvas id="square"  >
+Your browser does not support the HTML5 canvas tag.
+</canvas>
+
+
+</div>
+<div id="choice"  class="center" >
+   <div class="left" >
+   <input type="radio" id="perimeter" name="type" checked="checked">
+  <label for="perimeter">Perimeter</label>
+ </div>
+   <div class="left" >
+  <input type="radio" id="spiral" name="type"   >
+  <label for="spiral">Spiral</label>
+     </div>
+     <div class="left" >
+  <label for="size">square size</label>
+  <input type="number" id="size" min="2" max="10" value="4">
+     </div>
+     <button id="display" type="button">Display</button>
+</div>
+<script>
+   "use strict";
+
+   const SIZE = 60;
+   
+   const HALF_SIZE = SIZE/2;
+   
+   class Square {
+      constructor(Size, Ctx) {
+         this.Size = Size;
+         this.HalfSize = Size/2;
+         
+         this.Ctx = Ctx;
+         Ctx.canvas.height = Ctx.canvas.width = Size * SIZE;
+
+      }
+      
+      drawCell(row, col, number ,color)
+      {
+         console.log("row = ", row, "col = ", col, "color = ", color);
+         let x=col*SIZE, y=row*SIZE;
+         this.Ctx .fillStyle=color;         
+         //this.Ctx .fillStyle="red";
+         this.Ctx.fillRect(x ,y, SIZE, SIZE);
+            this.Ctx .fillStyle="white";
+         this.Ctx.fillText(number, x+HALF_SIZE,y+HALF_SIZE);
+         
+
+      }
+   }
+   
+  class SpiralSquare extends Square {
+
+
+   
+   }
+   
+   class PerimeterSquare extends Square {
+     
+      constructor(Size, Ctx) {
+         super(Size, Ctx);
+         
+         this.Odd = Size%2;
+         this.HalfSize = (Size - this.Odd)/2;
+         
+         this.LastIndex = Size - 1;
+
+         
+         console.log("HalfSize = ", this.HalfSize);
+
+      }
+      
+      GetColor(Number)
+      {
+         let Color = Number*SIZE ;
+         
+         return "rgb(" + Color+ "," + Color%100  + "," + (Color/2)%100 + ")";
+      }
+      
+      Symetric(Index)
+      {
+         return this.LastIndex - Index;
+      }
+
+      DisplayRow(row)
+      {
+         let MiddleValue = row + 1;
+         console.log("MiddleValue= ", MiddleValue);
+         let SymRow = this.Symetric(row);
+         
+         for (let col = 0; col < this.HalfSize ; col++) 
+         {
+            let Value = (col < row) ? col +1: MiddleValue;
+            let Color = this.GetColor(Value);
+            console.log("Color = ", Color);
+
+            let SymCol = this.Symetric(col);
+            
+            this.drawCell(row, col, Value, Color);
+            this.drawCell(SymRow, col, Value, Color);            
+            this.drawCell(row, SymCol, Value, Color);
+            this.drawCell(SymRow, SymCol, Value, Color);
+         }
+         
+         if(this.Odd)
+         {
+            console.log("Dislplay Odd Col");
+            this.drawCell( row , this.HalfSize , MiddleValue, 
+                              this.GetColor(MiddleValue));
+            this.drawCell( SymRow , this.HalfSize , MiddleValue, 
+                              this.GetColor(MiddleValue));
+            
+         }
+      }
+      
+      DisplayMiddleRow()
+      {
+         console.log("DisplayMiddleRow");
+         for (let col = 0; col < this.HalfSize ; col++) 
+         {
+            let Value =  col +1;
+            let Color = this.GetColor(Value);
+            
+            this.drawCell(this.HalfSize, col, Value, Color);
+            this.drawCell(this.HalfSize, this.Symetric(col), Value, Color);
+         }
+         
+         if(this.Odd)
+         {
+            let Value =  this.HalfSize +1;
+            this.drawCell( this.HalfSize ,  this.HalfSize , Value, 
+                                                this.GetColor(Value));
+         }
+      }
+      
+      Display()
+      {
+         console.log("perimeter: ", this.Size);
+
+         for (let row = 0; row < this.HalfSize ; row++) 
+         {
+            this.DisplayRow(row);
+         }
+         
+         if(this.Odd)
+         {
+            this.DisplayMiddleRow();
+         }
+      }
+   }
+   
+   
+    let Ctx = document.getElementById("square").getContext('2d');
+          Ctx.textBaseline="middle";
+          Ctx.textAlign="center"; 
+          Ctx.font = "60px Arial";
+          
+   let SizeInput = document.getElementById("size"); 
+      let Perimeter = document.getElementById("perimeter"); 
+   
+
+   
+
+
+ 
+
+   document.getElementById("display").addEventListener('click',function(event) {
+        
+        let Size = SizeInput.value 
+        
+   
+         Square = Perimeter.checked ? 
+                     new PerimeterSquare(SizeInput.value , Ctx): 
+                     new SpiralSquare(SizeInput.value , Ctx);
+
+         Square.Display();
+            
+         });
+
+
+
+</script>
+</body>
+
+</html>
