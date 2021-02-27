@@ -54,21 +54,21 @@ Your browser does not support the HTML5 canvas tag.
 
 
 </div>
-<div id="choice"  class="center" >
+<form id="choice"  class="center" >
    <div class="left" >
-   <input type="radio" id="perimeter" name="type" checked="checked">
-  <label for="perimeter">Perimeter</label>
- </div>
+      <input type="radio" id="perimeter" name="type" checked="checked">
+      <label for="perimeter">Perimeter</label>
+   </div>
    <div class="left" >
-  <input type="radio" id="spiral" name="type"   >
-  <label for="spiral">Spiral</label>
-     </div>
-     <div class="left" >
-  <label for="size">square size</label>
-  <input type="number" id="size" min="2" max="10" value="4">
-     </div>
-     <button id="display" type="button">Display</button>
-</div>
+      <input type="radio" id="spiral" name="type">
+      <label for="spiral">Spiral</label>
+   </div>
+   <div class="left" >
+      <label for="size">square size</label>
+      <input type="number" id="size" min="2" max="20" value="4" >
+   </div>
+   <input type="submit" >Display</button>
+</form>
 <script>
    "use strict";
 
@@ -88,10 +88,9 @@ Your browser does not support the HTML5 canvas tag.
       
       drawCell(row, col, number ,color)
       {
-         console.log("row = ", row, "col = ", col, "color = ", color);
+        
          let x=col*SIZE, y=row*SIZE;
          this.Ctx .fillStyle=color;         
-         //this.Ctx .fillStyle="red";
          this.Ctx.fillRect(x ,y, SIZE, SIZE);
             this.Ctx .fillStyle="white";
          this.Ctx.fillText(number, x+HALF_SIZE,y+HALF_SIZE);
@@ -116,9 +115,6 @@ Your browser does not support the HTML5 canvas tag.
          
          this.LastIndex = Size - 1;
 
-         
-         console.log("HalfSize = ", this.HalfSize);
-
       }
       
       GetColor(Number)
@@ -136,14 +132,14 @@ Your browser does not support the HTML5 canvas tag.
       DisplayRow(row)
       {
          let MiddleValue = row + 1;
-         console.log("MiddleValue= ", MiddleValue);
+ 
          let SymRow = this.Symetric(row);
          
          for (let col = 0; col < this.HalfSize ; col++) 
          {
             let Value = (col < row) ? col +1: MiddleValue;
             let Color = this.GetColor(Value);
-            console.log("Color = ", Color);
+          
 
             let SymCol = this.Symetric(col);
             
@@ -155,7 +151,7 @@ Your browser does not support the HTML5 canvas tag.
          
          if(this.Odd)
          {
-            console.log("Dislplay Odd Col");
+            
             this.drawCell( row , this.HalfSize , MiddleValue, 
                               this.GetColor(MiddleValue));
             this.drawCell( SymRow , this.HalfSize , MiddleValue, 
@@ -166,7 +162,7 @@ Your browser does not support the HTML5 canvas tag.
       
       DisplayMiddleRow()
       {
-         console.log("DisplayMiddleRow");
+         
          for (let col = 0; col < this.HalfSize ; col++) 
          {
             let Value =  col +1;
@@ -186,7 +182,6 @@ Your browser does not support the HTML5 canvas tag.
       
       Display()
       {
-         console.log("perimeter: ", this.Size);
 
          for (let row = 0; row < this.HalfSize ; row++) 
          {
@@ -201,13 +196,13 @@ Your browser does not support the HTML5 canvas tag.
    }
    
    
-    let Ctx = document.getElementById("square").getContext('2d');
-          Ctx.textBaseline="middle";
-          Ctx.textAlign="center"; 
-          Ctx.font = "60px Arial";
+   let Ctx = document.getElementById("square").getContext('2d');
+   Ctx.textBaseline="middle";
+   Ctx.textAlign="center"; 
+   Ctx.font = "100px Arial";
           
    let SizeInput = document.getElementById("size"); 
-      let Perimeter = document.getElementById("perimeter"); 
+   let Perimeter = document.getElementById("perimeter"); 
    
 
    
@@ -215,8 +210,8 @@ Your browser does not support the HTML5 canvas tag.
 
  
 
-   document.getElementById("display").addEventListener('click',function(event) {
-        
+   document.getElementById("choice").addEventListener('submit',function(event) {
+        event.preventDefault();
         let Size = SizeInput.value 
         
    
